@@ -85,11 +85,11 @@ public class Money {
     }
 
 
-    private Money(Currency currency, long amount) {
+    public Money(Currency currency, long amount) {
         this(currency, Math.round(amount / 10.0) * 10, 0);
     }
 
-    private Money(Currency currency, double amount) {
+    public Money(Currency currency, double amount) {
         this(currency, 0L, Math.round(100 * amount) / 100.0);
     }
 

@@ -15,7 +15,7 @@ class BankTest {
         bank = new Bank();
     }
 
-    @DisplayName("수수료 확안")
+    @DisplayName("수수료 확인")
     @Test
     void checkExchangeFee() {
         Money money1 = Money.WON(10_000L);
@@ -25,12 +25,24 @@ class BankTest {
 
     @DisplayName("환전 WON -> DOLLAR")
     @Test
-    void exchange() {
-        Money money = Money.WON(10_000L); // 10$
+    void exchangeToDallar() {
+        Money moneyWon = Money.WON(10_000L);
 
         double exchangeResult = Money.DOLLAR(10).getAmount() - bank.getExchangedFee(Money.DOLLAR(10));
 
-        assertThat(bank.exchange(money, Currency.DOLLAR)).isEqualTo(exchangeResult);
+        assertThat(bank.exchange(moneyWon, Currency.DOLLAR)).isEqualTo(exchangeResult);
+
+
+    }
+
+    @DisplayName("환전 DOLLAR -> WON")
+    @Test
+    void exchangeToWon() {
+        Money moneyDallar = Money.DOLLAR(10);
+
+        double exchangeResult = Money.DOLLAR(10).getAmount() - bank.getExchangedFee(Money.DOLLAR(10));
+
+        assertThat(bank.exchange(moneyDallar, Currency.DOLLAR)).isEqualTo(exchangeResult);
 
 
     }

@@ -2,5 +2,7 @@ package com.nhnacademy;
 
 public interface Exchangable {
 
-    double getExchangedFee(Money money);
+    long toWon(double thisAmount);
+
+    double fromWon(long wonAmount);
 }
