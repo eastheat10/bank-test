@@ -16,7 +16,7 @@ public class Bank {
         double exchangedAmount;
         // 2. currency == WON
         if (currency.equals(Currency.WON)) {  // 다른 통화 -> 원으로 환전
-            exchangedAmount = currency.toWon(money.getAmount());
+            exchangedAmount = money.getCurrency().toWon(money.getAmount());
             return Money.WON((long) exchangedAmount);
         }
 
@@ -34,7 +34,7 @@ public class Bank {
 
     public double getExchangedFee(Money money) {
         double amount = money.getAmount() * EXCHANGE_FEE;
-
+//
         return amount;
     }
 
