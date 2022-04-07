@@ -1,5 +1,8 @@
 package com.nhnacademy;
 
+import com.nhnacademy.exception.InvalidCurrencyException;
+import com.nhnacademy.exception.NegativeMoneyException;
+
 public class Money {
 
     private final Currency currency;
@@ -38,7 +41,8 @@ public class Money {
     }
 
     public Money subtract(Money money) {
-        if (!money.getCurrency().equals(this.getCurrency())) {
+        if (!money.getCurrency()
+                  .equals(this.getCurrency())) {
             throw new InvalidCurrencyException();
         }
 
@@ -50,7 +54,7 @@ public class Money {
         double newAmount = this.getAmount() - money.getAmount();
 
         if (money.getCurrency() == Currency.WON) {
-            return new Money(money.getCurrency(), (long) newAmount);
+            return Money.WON((long) newAmount);
         }
 
         return new Money(money.getCurrency(), newAmount);

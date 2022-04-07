@@ -1,4 +1,4 @@
-package com.nhnacademy;
+package com.nhnacademy.exception;
 
 public class NegativeMoneyException extends IllegalArgumentException {
     public NegativeMoneyException() {

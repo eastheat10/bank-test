@@ -18,7 +18,7 @@ class BankTest {
     @DisplayName("수수료 확안")
     @Test
     void checkExchangeFee() {
-        Money money1 = new Money(Currency.WON, 10_000L);
+        Money money1 = Money.WON(10_000L);
 
         assertThat(bank.getExchangedFee(money1)).isEqualTo(money1.getAmount() * 0.05);
     }
@@ -26,9 +26,12 @@ class BankTest {
     @DisplayName("환전 WON -> DOLLAR")
     @Test
     void exchange() {
-        Money money = new Money(Currency.WON, 10_000L); // 10$
-        Money money2 = new Money(Currency.DOLLAR, 10);
-        Money exchangeResult = new Money(Currency.DOLLAR, 9.5);
-        assertThat(bank.exchange(money, Currency.DOLLAR)).isEqualTo(money.getAmount() * 0.95 * 0.01);
+        Money money = Money.WON(10_000L); // 10$
+
+        double exchangeResult = Money.DOLLAR(10).getAmount() - bank.getExchangedFee(Money.DOLLAR(10));
+
+        assertThat(bank.exchange(money, Currency.DOLLAR)).isEqualTo(exchangeResult);
+
+
     }
 }
