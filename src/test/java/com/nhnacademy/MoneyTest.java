@@ -15,13 +15,13 @@ class MoneyTest {
 
         assertThat(money1.equals(money2)).isTrue();
     }
+
     @DisplayName("화폐 더하기")
     @Test
-    void plusMoney () {
+    void plusMoney() {
         Money money1 = new Money(Currency.WON, 10_000L);
         Money money2 = new Money(Currency.WON, 10_000L);
 
         assertThat(money1.getAmount() + money2.getAmount()).isEqualTo(20_000);
     }
-
 }
