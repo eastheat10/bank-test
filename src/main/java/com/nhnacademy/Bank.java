@@ -1,14 +1,12 @@
 package com.nhnacademy;
 
-import java.lang.reflect.Type;
-
 public class Bank implements Exchangable {
     private final static double EXCHANGE_FEE = 0.05;
 
 
-    private Money exchange(Money money,Currency currency){
-        if (money.getAmount()
-        money - getExchangedFee(money);
+    public Money exchange(Money money, Currency currency) {
+//        money - getExchangedFee(money);
+
         return null;
     }
 
