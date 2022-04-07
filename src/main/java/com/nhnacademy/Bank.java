@@ -8,8 +8,7 @@ public class Bank {
 
     public Money exchange(Money money, Currency currency) { // currency -> 환전이 될 통화
         // 1. money.getCurrency == currency -> throw Exception
-        if (money.getCurrency()
-                 .equals(currency)) {
+        if (money.getCurrency().equals(currency)) {
             throw new InvalidCurrencyException();
         }
 
@@ -17,12 +16,16 @@ public class Bank {
         // 2. currency == WON
         if (currency.equals(Currency.WON)) {  // 다른 통화 -> 원으로 환전
             exchangedAmount = money.getCurrency().toWon(money.getAmount());
+            exchangedAmount -= getExchangedFee(exchangedAmount);
+
             return Money.WON((long) exchangedAmount);
         }
 
         // 3. money.getCurrency == WON
-        if (money.getCurrency().equals(Currency.WON)) {  // 원 -> 다른 통화
+        if (money.getCurrency().equals(Currency.WON) ) {  // 원 -> 다른 통화
             exchangedAmount = currency.fromWon((long) money.getAmount());
+            exchangedAmount -= getExchangedFee(exchangedAmount);
+
             return new Money(currency, exchangedAmount);
         }
 
@@ -32,10 +35,8 @@ public class Bank {
         return null;
     }
 
-    public double getExchangedFee(Money money) {
-        double amount = money.getAmount() * EXCHANGE_FEE;
-//
-        return amount;
+    public double getExchangedFee(double amount) {
+        return amount * EXCHANGE_FEE;
     }
 
 

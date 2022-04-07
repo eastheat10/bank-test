@@ -20,30 +20,25 @@ class BankTest {
     void checkExchangeFee() {
         Money money1 = Money.WON(10_000L);
 
-        assertThat(bank.getExchangedFee(money1)).isEqualTo(money1.getAmount() * 0.05);
+        assertThat(bank.getExchangedFee(money1.getAmount())).isEqualTo(money1.getAmount() * 0.05);
     }
 
-    @DisplayName("환전 WON -> DOLLAR")
+    @DisplayName("[수수료 계산 포함] 환전 WON -> DOLLAR")
     @Test
-    void exchangeToDallar() {
+    void exchangeToDollarFee() {
+
         Money moneyWon = Money.WON(10_000L);
+        double exchangeResult = Money.DOLLAR(10).getAmount() - bank.getExchangedFee(Money.DOLLAR(10).getAmount());
 
-        double exchangeResult = Money.DOLLAR(10).getAmount() - bank.getExchangedFee(Money.DOLLAR(10));
-
-        assertThat(bank.exchange(moneyWon, Currency.DOLLAR)).isEqualTo(exchangeResult);
-
-
+        assertThat(bank.exchange(moneyWon, Currency.DOLLAR).getAmount()).isEqualTo(exchangeResult);
     }
 
-    @DisplayName("환전 DOLLAR -> WON")
+    @DisplayName("[수수료 계산 포함] 환전 DOLLAR -> WON")
     @Test
-    void exchangeToWon() {
-        Money moneyDallar = Money.DOLLAR(10);
-
-        double exchangeResult = Money.DOLLAR(10).getAmount() - bank.getExchangedFee(Money.DOLLAR(10));
-
-        assertThat(bank.exchange(moneyDallar, Currency.DOLLAR)).isEqualTo(exchangeResult);
-
-
+    void exchangeToWonFee() {
+        Money moneyDollar = Money.DOLLAR(10);
+        double resultAmount = bank.exchange(moneyDollar,Currency.WON).getAmount();
+        long expectAmount = (long)(Money.WON(10_000L).getAmount() - bank.getExchangedFee(10_000L));
+        assertThat(resultAmount).isEqualTo(expectAmount);
     }
 }
