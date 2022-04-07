@@ -3,7 +3,6 @@ package com.nhnacademy;
 import com.nhnacademy.exception.InvalidCurrencyException;
 import com.nhnacademy.exception.NegativeMoneyException;
 import java.math.BigDecimal;
-import java.math.RoundingMode;
 
 public class Money {
 
@@ -11,6 +10,9 @@ public class Money {
     private final BigDecimal amount;
 
     public Money(Currency currency, BigDecimal amount) {
+        if (amount.compareTo(BigDecimal.valueOf(0)) < 0) {
+            throw new NegativeMoneyException();
+        }
         this.currency = currency;
         this.amount = currency.round(amount);
     }
@@ -52,7 +54,6 @@ public class Money {
             throw new InvalidCurrencyException();
         }
 
-        System.out.println(this.getAmount() + " ==== " + money.getAmount());
         if (this.getAmount().compareTo(money.getAmount()) < 0) {
             throw new NegativeMoneyException();
         }

@@ -46,7 +46,7 @@ class BankTest {
                                       .getAmount();
         BigDecimal expectAmount = (Money.WON(BigDecimal.valueOf(10000))
                                         .getAmount()
-                                        .subtract(bank.getExchangedFee(BigDecimal.valueOf(10000)))).setScale(0);
+                                        .subtract(bank.getExchangedFee(BigDecimal.valueOf(10000)))).setScale(0,RoundingMode.HALF_UP);
         assertThat(resultAmount).isEqualTo(expectAmount);
     }
 

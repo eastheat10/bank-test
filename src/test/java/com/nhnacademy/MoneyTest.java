@@ -27,7 +27,8 @@ class MoneyTest {
         Money money2 = Money.WON(BigDecimal.valueOf(10000L));
 
         Money resultMoney = money1.add(money2);
-        assertThat(money1.getAmount().add(money2.getAmount())).isEqualTo(resultMoney.getAmount());
+        assertThat(money1.getAmount()
+                         .add(money2.getAmount())).isEqualTo(resultMoney.getAmount());
     }
 
     @DisplayName("화폐 더하기 (DOLLAR)")
@@ -37,7 +38,8 @@ class MoneyTest {
         Money money2 = Money.DOLLAR(BigDecimal.valueOf(10));
 
         Money resultMoney = money1.add(money2);
-        assertThat((money1.getAmount().add(money2.getAmount()))).isEqualTo(resultMoney.getAmount());
+        assertThat((money1.getAmount()
+                          .add(money2.getAmount()))).isEqualTo(resultMoney.getAmount());
 
     }
 
@@ -47,7 +49,8 @@ class MoneyTest {
         Money money1 = Money.DOLLAR(BigDecimal.valueOf(6));
         Money money2 = Money.DOLLAR(BigDecimal.valueOf(5));
         Money resultMoney = money1.subtract(money2);
-        assertThat(money1.getAmount().subtract(money2.getAmount())).isEqualTo(resultMoney.getAmount());
+        assertThat(money1.getAmount()
+                         .subtract(money2.getAmount())).isEqualTo(resultMoney.getAmount());
     }
 
     @DisplayName("화폐를 뺸 결과가 음수 일때 (Dollar)")
@@ -56,10 +59,8 @@ class MoneyTest {
         Money money1 = Money.DOLLAR(BigDecimal.valueOf(5));
         Money money2 = Money.DOLLAR(BigDecimal.valueOf(6));
         assertThatThrownBy(() -> money1.subtract(money2))    //여기서 throw된 오류를 검증해서 맞으면 통과
-                                                             .isInstanceOf(
-                                                                 NegativeMoneyException.class)
-                                                             .hasMessage(
-                                                                 "Money amount can't be negative");
+             .isInstanceOf(NegativeMoneyException.class)
+             .hasMessage("Money amount can't be negative");
     }
 
     @DisplayName("화폐를 뺸 결과가 음수 일때 (WON)")
@@ -68,10 +69,8 @@ class MoneyTest {
         Money money1 = Money.WON(BigDecimal.valueOf(10000));
         Money money2 = Money.WON(BigDecimal.valueOf(100000));
         assertThatThrownBy(() -> money1.subtract(money2))    //여기서 throw된 오류를 검증해서 맞으면 통과
-                                                             .isInstanceOf(
-                                                                 NegativeMoneyException.class)
-                                                             .hasMessage(
-                                                                 "Money amount can't be negative");
+                         .isInstanceOf(NegativeMoneyException.class)
+                         .hasMessage("Money amount can't be negative");
     }
 
     @DisplayName("달러 소수점 이하 2자리까지 반올림")
@@ -89,8 +88,9 @@ class MoneyTest {
     @Test
     void wonRound() {
         BigDecimal amount = BigDecimal.valueOf(10006);  // 10_010 나와야 함
-        BigDecimal roundResult = amount.divide(BigDecimal.valueOf(10)).setScale(0, RoundingMode.HALF_EVEN).multiply(
-            BigDecimal.valueOf(10));
+        BigDecimal roundResult = amount.divide(BigDecimal.valueOf(10), 0, RoundingMode.HALF_UP)
+                                       .multiply(
+                                           BigDecimal.valueOf(10));
 
         Money money = Money.WON(amount);
 
@@ -99,16 +99,16 @@ class MoneyTest {
         assertThat(money.getAmount()).isEqualTo(roundResult);
 
 
-
     }
 
     @DisplayName("amount가 음수일 때")
     @Test
     void negativeMoney() {
-        long amount = -1;
+        BigDecimal amount = BigDecimal.valueOf(-1);
 
-        assertThatThrownBy(() -> Money.WON(BigDecimal.valueOf(amount)))
-            .isInstanceOf(NegativeMoneyException.class);
+        assertThatThrownBy(() -> Money.WON(amount))
+            .isInstanceOf(NegativeMoneyException.class)
+            .hasMessage("Money amount can't be negative");
     }
 
 }

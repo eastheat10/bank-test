@@ -9,7 +9,7 @@ public enum Currency implements Exchangable {
 
         @Override
         public BigDecimal round(BigDecimal amount) {
-            return amount.divide(BigDecimal.valueOf(10)).setScale(0, RoundingMode.HALF_EVEN).multiply(
+            return amount.divide(BigDecimal.valueOf(10),0, RoundingMode.HALF_EVEN).multiply(
                 BigDecimal.valueOf(10));
         }
 
@@ -20,7 +20,7 @@ public enum Currency implements Exchangable {
 
         @Override
         public BigDecimal fromWon(BigDecimal wonAmount) {
-            return wonAmount.divide(BigDecimal.valueOf(getRate()));
+            return wonAmount.divide(BigDecimal.valueOf(getRate()), 0, RoundingMode.HALF_EVEN);
         }
     },
 
@@ -37,7 +37,7 @@ public enum Currency implements Exchangable {
 
         @Override
         public BigDecimal fromWon(BigDecimal wonAmount) {
-            return wonAmount.divide(BigDecimal.valueOf(getRate()));
+            return wonAmount.divide(BigDecimal.valueOf(getRate()), 2, RoundingMode.HALF_DOWN);
         }
     },
 
@@ -54,7 +54,7 @@ public enum Currency implements Exchangable {
 
         @Override
         public BigDecimal fromWon(BigDecimal wonAmount) {
-            return wonAmount.divide(BigDecimal.valueOf(getRate()));
+            return wonAmount.divide(BigDecimal.valueOf(getRate()), 2, RoundingMode.HALF_DOWN);
         }
     };
 

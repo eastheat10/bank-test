@@ -6,7 +6,7 @@ import java.math.RoundingMode;
 
 public class Bank {
 
-    private final static BigDecimal EXCHANGE_FEE = new BigDecimal(0.05);
+    private final static BigDecimal EXCHANGE_FEE = BigDecimal.valueOf(0.05);
 
     /**
      * 서로 다른 두 통화 간 환전을 진행하는 Method
