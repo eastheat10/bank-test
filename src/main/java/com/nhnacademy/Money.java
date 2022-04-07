@@ -1,17 +1,17 @@
 package com.nhnacademy;
 
-public class Money{
+public class Money {
 
     private final Currency currency;
     private final long longAmount;
     private final double doubleAmount;
 
-    public Money(Currency currency, long amount) {
-        this(currency, amount, 0);
+    public static Money WON(long amount) {
+        return new Money(Currency.WON, amount);
     }
 
-    public Money(Currency currency, double amount) {
-        this(currency, 0L, amount);
+    public static Money DOLLAR(double amount) {
+        return new Money(Currency.DOLLAR, amount);
     }
 
     public Currency getCurrency() {
@@ -22,25 +22,36 @@ public class Money{
         return this.doubleAmount == 0 ? (double) this.longAmount : this.doubleAmount;
     }
 
-    public Money add(Money money){
-        if(!money.getCurrency().equals(this.getCurrency())){
+    public Money add(Money money) {
+        if (!money.getCurrency()
+                  .equals(this.getCurrency())) {
             throw new IllegalArgumentException();
         }
 
+        double resultAmount = money.getAmount() + this.getAmount();
 
-        return money;
+        if (money.getCurrency() == Currency.WON) {
+            return new Money(Currency.WON, (long) resultAmount);
+        }
+
+        return new Money(Currency.DOLLAR, resultAmount);
     }
 
     public Money subtract(Money money) {
-        if(!money.getCurrency().equals(this.getCurrency())){
+        if (!money.getCurrency().equals(this.getCurrency())) {
             throw new InvalidCurrencyException();
         }
 
-        if(getAmount() < money.getAmount()){
+        System.out.println(this.getAmount() + " ==== " + money.getAmount());
+        if (this.getAmount() < money.getAmount()) {
             throw new NegativeMoneyException();
         }
 
         double newAmount = this.getAmount() - money.getAmount();
+
+        if (money.getCurrency() == Currency.WON) {
+            return new Money(money.getCurrency(), (long) newAmount);
+        }
 
         return new Money(money.getCurrency(), newAmount);
     }
@@ -60,9 +71,23 @@ public class Money{
     }
 
     private Money(Currency currency, long longAmount, double doubleAmount) {
+//        if (longAmount < 0 || doubleAmount < 0) {
+//            throw
+//        }
+
         this.currency = currency;
         this.longAmount = longAmount;
         this.doubleAmount = doubleAmount;
     }
+
+
+    private Money(Currency currency, long amount) {
+        this(currency, Math.round(amount / 10.0) * 10, 0);
+    }
+
+    private Money(Currency currency, double amount) {
+        this(currency, 0L, Math.round(100 * amount) / 100.0);
+    }
+
 
 }
