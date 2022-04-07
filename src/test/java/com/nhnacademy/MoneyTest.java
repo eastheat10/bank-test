@@ -4,6 +4,8 @@ import static org.assertj.core.api.Assertions.assertThat;
 import static org.assertj.core.api.Assertions.assertThatThrownBy;
 
 import com.nhnacademy.exception.NegativeMoneyException;
+import java.math.BigDecimal;
+import java.math.RoundingMode;
 import org.junit.jupiter.api.DisplayName;
 import org.junit.jupiter.api.Test;
 
@@ -12,8 +14,8 @@ class MoneyTest {
     @DisplayName("화폐 비교")
     @Test
     void compareMoney() {
-        Money money1 = Money.WON(10_000L);
-        Money money2 = Money.WON(10_000L);
+        Money money1 = Money.WON(BigDecimal.valueOf(10000));
+        Money money2 = Money.WON(BigDecimal.valueOf(10000));
 
         assertThat(money1.equals(money2)).isTrue();
     }
@@ -21,38 +23,38 @@ class MoneyTest {
     @DisplayName("화폐 더하기 (WON)")
     @Test
     void plusMoney_WON() {
-        Money money1 = Money.WON(10_000L);
-        Money money2 = Money.WON(10_000L);
+        Money money1 = Money.WON(BigDecimal.valueOf(10000L));
+        Money money2 = Money.WON(BigDecimal.valueOf(10000L));
 
-        Money resultmoney = money1.add(money2);
-        assertThat(money1.getAmount() + money2.getAmount()).isEqualTo(20_000);
+        Money resultMoney = money1.add(money2);
+        assertThat(money1.getAmount().add(money2.getAmount())).isEqualTo(resultMoney.getAmount());
     }
 
     @DisplayName("화폐 더하기 (DOLLAR)")
     @Test
     void plusMoney_DOLLAR() {
-        Money money1 = Money.DOLLAR(10);
-        Money money2 = Money.DOLLAR(10);
+        Money money1 = Money.DOLLAR(BigDecimal.valueOf(10));
+        Money money2 = Money.DOLLAR(BigDecimal.valueOf(10));
 
         Money resultMoney = money1.add(money2);
-        assertThat((money1.getAmount() + money2.getAmount())).isEqualTo(resultMoney.getAmount());
+        assertThat((money1.getAmount().add(money2.getAmount()))).isEqualTo(resultMoney.getAmount());
 
     }
 
     @DisplayName("화폐 빼기")
     @Test
     void subtractMoney() {
-        Money money1 = Money.DOLLAR(6);
-        Money money2 = Money.DOLLAR(5);
+        Money money1 = Money.DOLLAR(BigDecimal.valueOf(6));
+        Money money2 = Money.DOLLAR(BigDecimal.valueOf(5));
         Money resultMoney = money1.subtract(money2);
-        assertThat(money1.getAmount() - money2.getAmount()).isEqualTo(resultMoney.getAmount());
+        assertThat(money1.getAmount().subtract(money2.getAmount())).isEqualTo(resultMoney.getAmount());
     }
 
     @DisplayName("화폐를 뺸 결과가 음수 일때 (Dollar)")
     @Test
     void subtractMoneyIsMinus_DOLLAR() {
-        Money money1 = Money.DOLLAR(5.0);
-        Money money2 = Money.DOLLAR(6.0);
+        Money money1 = Money.DOLLAR(BigDecimal.valueOf(5));
+        Money money2 = Money.DOLLAR(BigDecimal.valueOf(6));
         assertThatThrownBy(() -> money1.subtract(money2))    //여기서 throw된 오류를 검증해서 맞으면 통과
                                                              .isInstanceOf(
                                                                  NegativeMoneyException.class)
@@ -63,8 +65,8 @@ class MoneyTest {
     @DisplayName("화폐를 뺸 결과가 음수 일때 (WON)")
     @Test
     void subtractMoneyIsMinus_WON() {
-        Money money1 = Money.WON(10_000L);
-        Money money2 = Money.WON(10_0000L);
+        Money money1 = Money.WON(BigDecimal.valueOf(10000));
+        Money money2 = Money.WON(BigDecimal.valueOf(100000));
         assertThatThrownBy(() -> money1.subtract(money2))    //여기서 throw된 오류를 검증해서 맞으면 통과
                                                              .isInstanceOf(
                                                                  NegativeMoneyException.class)
@@ -76,9 +78,9 @@ class MoneyTest {
     @Test
     void dollarRound() {
         double amount = 5.016;  // 5.02 나와야 함
-        double roundResult = Math.round(100 * amount) / 100.0;
+        BigDecimal roundResult = BigDecimal.valueOf(Math.round(100 * amount) / 100.0);
 
-        Money money = Money.DOLLAR(amount);
+        Money money = Money.DOLLAR(BigDecimal.valueOf(amount));
 
         assertThat(money.getAmount()).isEqualTo(roundResult);
     }
@@ -86,8 +88,9 @@ class MoneyTest {
     @DisplayName("원 1의 자리에서 반올림")
     @Test
     void wonRound() {
-        long amount = 10_006L;  // 10_010 나와야 함
-        double roundResult = Math.round(amount / 10.0) * 10;
+        BigDecimal amount = BigDecimal.valueOf(10006);  // 10_010 나와야 함
+        BigDecimal roundResult = amount.divide(BigDecimal.valueOf(10)).setScale(0, RoundingMode.HALF_EVEN).multiply(
+            BigDecimal.valueOf(10));
 
         Money money = Money.WON(amount);
 
@@ -95,13 +98,16 @@ class MoneyTest {
         System.out.println("money = " + money.getAmount());
         assertThat(money.getAmount()).isEqualTo(roundResult);
 
+
+
     }
 
     @DisplayName("amount가 음수일 때")
+    @Test
     void negativeMoney() {
         long amount = -1;
 
-        assertThatThrownBy(() -> Money.WON(amount))
+        assertThatThrownBy(() -> Money.WON(BigDecimal.valueOf(amount)))
             .isInstanceOf(NegativeMoneyException.class);
     }
 

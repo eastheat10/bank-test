@@ -1,41 +1,52 @@
 package com.nhnacademy;
 
+import java.math.BigDecimal;
+
 public enum Currency implements Exchangable {
 
-    WON{
+    WON(1000L) {
         @Override
-        public long toWon(double thisAmount) {
-            return (long) thisAmount;
+        public BigDecimal toWon(BigDecimal thisAmount) {
+            return thisAmount;
         }
 
         @Override
-        public double fromWon(long wonAmount) {
-            return (double) wonAmount / 1000.0;
-        }
-    },
-
-    DOLLAR {
-
-        @Override
-        public long toWon(double thisAmount) {
-            return (long) thisAmount * 1000L;
-        }
-
-        @Override
-        public double fromWon(long wonAmount) {
-            return wonAmount / 1000.0;
+        public BigDecimal fromWon(BigDecimal wonAmount) {
+            return wonAmount.divide(BigDecimal.valueOf(getRate()));
         }
     },
 
-    EURO {
+    DOLLAR(1000L) {
         @Override
-        public long toWon(double thisAmount) {
-            return (long) thisAmount * 1300L;
+        public BigDecimal toWon(BigDecimal thisAmount) {
+            return thisAmount.multiply(BigDecimal.valueOf(getRate()));
         }
 
         @Override
-        public double fromWon(long wonAmount) {
-            return wonAmount / 1300.0;
+        public BigDecimal fromWon(BigDecimal wonAmount) {
+            return wonAmount.divide(BigDecimal.valueOf(getRate()));
         }
+    },
+
+    EURO(1300L) {
+        @Override
+        public BigDecimal toWon(BigDecimal thisAmount) {
+            return thisAmount.multiply(BigDecimal.valueOf(getRate()));
+        }
+
+        @Override
+        public BigDecimal fromWon(BigDecimal wonAmount) {
+            return wonAmount.divide(BigDecimal.valueOf(getRate()));
+        }
+    };
+
+    private final long rate;
+
+    public long getRate() {
+        return rate;
+    }
+
+    Currency(long rate) {
+        this.rate = rate;
     }
 }

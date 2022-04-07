@@ -1,8 +1,10 @@
 package com.nhnacademy;
 
+import java.math.BigDecimal;
+
 public interface Exchangable {
 
-    long toWon(double thisAmount);
+    BigDecimal toWon(BigDecimal thisAmount);
 
-    double fromWon(long wonAmount);
+    BigDecimal fromWon(BigDecimal wonAmount);
 }

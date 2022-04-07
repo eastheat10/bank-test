@@ -2,18 +2,23 @@ package com.nhnacademy;
 
 import com.nhnacademy.exception.InvalidCurrencyException;
 import com.nhnacademy.exception.NegativeMoneyException;
+import java.math.BigDecimal;
 
 public class Money {
 
     private final Currency currency;
-    private final long longAmount;
-    private final double doubleAmount;
+    private final BigDecimal amount;
 
-    public static Money WON(long amount) {
+    public Money(Currency currency, BigDecimal amount) {
+        this.currency = currency;
+        this.amount = amount;
+    }
+
+    public static Money WON(BigDecimal amount) {
         return new Money(Currency.WON, amount);
     }
 
-    public static Money DOLLAR(double amount) {
+    public static Money DOLLAR(BigDecimal amount) {
         return new Money(Currency.DOLLAR, amount);
     }
 
@@ -21,8 +26,8 @@ public class Money {
         return currency;
     }
 
-    public double getAmount() {
-        return this.doubleAmount == 0 ? (double) this.longAmount : this.doubleAmount;
+    public BigDecimal getAmount() {
+        return this.amount;
     }
 
     public Money add(Money money) {
@@ -31,10 +36,10 @@ public class Money {
             throw new IllegalArgumentException();
         }
 
-        double resultAmount = money.getAmount() + this.getAmount();
+        BigDecimal resultAmount = money.getAmount().add(this.getAmount());
 
         if (money.getCurrency() == Currency.WON) {
-            return new Money(Currency.WON, (long) resultAmount);
+            return new Money(Currency.WON, resultAmount);
         }
 
         return new Money(Currency.DOLLAR, resultAmount);
@@ -47,14 +52,14 @@ public class Money {
         }
 
         System.out.println(this.getAmount() + " ==== " + money.getAmount());
-        if (this.getAmount() < money.getAmount()) {
+        if (this.getAmount().compareTo(money.getAmount()) < 0) {
             throw new NegativeMoneyException();
         }
 
-        double newAmount = this.getAmount() - money.getAmount();
+        BigDecimal newAmount = this.getAmount().subtract(money.getAmount());
 
         if (money.getCurrency() == Currency.WON) {
-            return Money.WON((long) newAmount);
+            return Money.WON(newAmount);
         }
 
         return new Money(money.getCurrency(), newAmount);
@@ -71,27 +76,7 @@ public class Money {
         }
         Money money = (Money) o;
         return (currency.equals(money.getCurrency())
-            && (this.getAmount() == money.getAmount()));
+            && (this.getAmount().equals(money.getAmount())));
     }
-
-    private Money(Currency currency, long longAmount, double doubleAmount) {
-//        if (longAmount < 0 || doubleAmount < 0) {
-//            throw
-//        }
-
-        this.currency = currency;
-        this.longAmount = longAmount;
-        this.doubleAmount = doubleAmount;
-    }
-
-
-    public Money(Currency currency, long amount) {
-        this(currency, Math.round(amount / 10.0) * 10, 0);
-    }
-
-    public Money(Currency currency, double amount) {
-        this(currency, 0L, Math.round(100 * amount) / 100.0);
-    }
-
 
 }

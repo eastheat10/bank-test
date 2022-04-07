@@ -1,10 +1,11 @@
 package com.nhnacademy;
 
 import com.nhnacademy.exception.InvalidCurrencyException;
+import java.math.BigDecimal;
 
 public class Bank {
 
-    private final static double EXCHANGE_FEE = 0.05;
+    private final static BigDecimal EXCHANGE_FEE = new BigDecimal(0.05);
 
     /**
      * 서로 다른 두 통화 간 환전을 진행하는 Method
@@ -20,21 +21,21 @@ public class Bank {
             throw new InvalidCurrencyException();
         }
 
-        double exchangedAmount = 0;
+        BigDecimal exchangedAmount = BigDecimal.valueOf(0);
         // 2. currency == WON
         if (currency.equals(Currency.WON)) {  // 다른 통화 -> 원으로 환전
             exchangedAmount = money.getCurrency()
                                    .toWon(money.getAmount());
-            exchangedAmount -= getExchangedFee(exchangedAmount);
+            exchangedAmount.subtract(getExchangedFee(exchangedAmount));
 
-            return Money.WON((long) exchangedAmount);
+            return Money.WON(exchangedAmount);
         }
 
         // 3. money.getCurrency == WON
         if (money.getCurrency()
                  .equals(Currency.WON)) {  // 원 -> 다른 통화
-            exchangedAmount = currency.fromWon((long) money.getAmount());
-            exchangedAmount -= getExchangedFee(exchangedAmount);
+            exchangedAmount = currency.fromWon(money.getAmount());
+            exchangedAmount.subtract(getExchangedFee(exchangedAmount));
 
             return new Money(currency, exchangedAmount);
         }
@@ -42,15 +43,13 @@ public class Bank {
         // 4. money.getCurrency != WON && currency != WON
         if (money.getCurrency().equals(Currency.EURO)) {
             Money otherCurrencyToWon = exchange(money, Currency.WON);
-            exchangedAmount = currency.fromWon((long)otherCurrencyToWon.getAmount());
+            exchangedAmount = currency.fromWon(otherCurrencyToWon.getAmount());
         }
 
         return new Money(currency, exchangedAmount);
     }
 
-    public double getExchangedFee(double amount) {
-        return amount * EXCHANGE_FEE;
+    public BigDecimal getExchangedFee(BigDecimal amount) {
+        return amount.multiply(EXCHANGE_FEE);
     }
-
-
 }
