@@ -22,11 +22,29 @@ public class Money{
         return this.doubleAmount == 0 ? (double) this.longAmount : this.doubleAmount;
     }
 
-    public Money subtract(Money fee) {
-        double money = this.getAmount() - fee.getAmount();
-//        fee.getCurrency() == Currency.WON ? (long) money : money
-        return new Money((fee.getCurrency() == Currency.WON) ? (long) money : money, fee.getCurrency());
+    public Money add(Money money){
+        if(!money.getCurrency().equals(this.getCurrency())){
+            throw new IllegalArgumentException();
+        }
+
+
+        return money;
     }
+
+    public Money subtract(Money money) {
+        if(!money.getCurrency().equals(this.getCurrency())){
+            throw new InvalidCurrencyException();
+        }
+
+        if(getAmount() < money.getAmount()){
+            throw new NegativeMoneyException();
+        }
+
+        double newAmount = this.getAmount() - money.getAmount();
+
+        return new Money(money.getCurrency(), newAmount);
+    }
+
 
     @Override
     public boolean equals(Object o) {
