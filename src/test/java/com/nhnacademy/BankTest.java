@@ -28,17 +28,34 @@ class BankTest {
     void exchangeToDollarFee() {
 
         Money moneyWon = Money.WON(10_000L);
-        double exchangeResult = Money.DOLLAR(10).getAmount() - bank.getExchangedFee(Money.DOLLAR(10).getAmount());
+        double exchangeResult = Money.DOLLAR(10)
+                                     .getAmount() - bank.getExchangedFee(Money.DOLLAR(10)
+                                                                              .getAmount());
 
-        assertThat(bank.exchange(moneyWon, Currency.DOLLAR).getAmount()).isEqualTo(exchangeResult);
+        assertThat(bank.exchange(moneyWon, Currency.DOLLAR)
+                       .getAmount()).isEqualTo(exchangeResult);
     }
 
     @DisplayName("[수수료 계산 포함] 환전 DOLLAR -> WON")
     @Test
     void exchangeToWonFee() {
         Money moneyDollar = Money.DOLLAR(10);
-        double resultAmount = bank.exchange(moneyDollar,Currency.WON).getAmount();
-        long expectAmount = (long)(Money.WON(10_000L).getAmount() - bank.getExchangedFee(10_000L));
+        double resultAmount = bank.exchange(moneyDollar, Currency.WON)
+                                  .getAmount();
+        long expectAmount = (long) (Money.WON(10_000L)
+                                         .getAmount() - bank.getExchangedFee(10_000L));
         assertThat(resultAmount).isEqualTo(expectAmount);
+    }
+
+    @DisplayName("EURO -> DOLLAR 환전")
+    @Test
+    void euroToDollar() {
+        Money euro = new Money(Currency.EURO, 100);
+        // euro -> won 100 -> 130_000 - fee(6,500) = 123,500
+        Money expect = Money.DOLLAR(123.5);
+
+        Money exchangeResult = bank.exchange(euro, Currency.DOLLAR);
+
+        assertThat(exchangeResult.getAmount()).isEqualTo(expect.getAmount());
     }
 }

@@ -1,6 +1,7 @@
 package com.nhnacademy;
 
 public enum Currency implements Exchangable {
+
     WON{
         @Override
         public long toWon(double thisAmount) {
@@ -24,6 +25,17 @@ public enum Currency implements Exchangable {
         public double fromWon(long wonAmount) {
             return wonAmount / 1000.0;
         }
-    };
+    },
 
+    EURO {
+        @Override
+        public long toWon(double thisAmount) {
+            return (long) thisAmount * 1300L;
+        }
+
+        @Override
+        public double fromWon(long wonAmount) {
+            return wonAmount / 1300.0;
+        }
+    }
 }
