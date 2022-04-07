@@ -1,10 +1,18 @@
 package com.nhnacademy;
 
 import java.math.BigDecimal;
+import java.math.RoundingMode;
 
 public enum Currency implements Exchangable {
 
     WON(1000L) {
+
+        @Override
+        public BigDecimal round(BigDecimal amount) {
+            return amount.divide(BigDecimal.valueOf(10)).setScale(0, RoundingMode.HALF_EVEN).multiply(
+                BigDecimal.valueOf(10));
+        }
+
         @Override
         public BigDecimal toWon(BigDecimal thisAmount) {
             return thisAmount;
@@ -18,6 +26,11 @@ public enum Currency implements Exchangable {
 
     DOLLAR(1000L) {
         @Override
+        public BigDecimal round(BigDecimal amount) {
+            return amount.setScale(2, RoundingMode.HALF_DOWN);
+        }
+
+        @Override
         public BigDecimal toWon(BigDecimal thisAmount) {
             return thisAmount.multiply(BigDecimal.valueOf(getRate()));
         }
@@ -29,6 +42,11 @@ public enum Currency implements Exchangable {
     },
 
     EURO(1300L) {
+        @Override
+        public BigDecimal round(BigDecimal amount) {
+            return amount.setScale(2, RoundingMode.HALF_DOWN);
+        }
+
         @Override
         public BigDecimal toWon(BigDecimal thisAmount) {
             return thisAmount.multiply(BigDecimal.valueOf(getRate()));

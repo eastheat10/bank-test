@@ -2,6 +2,7 @@ package com.nhnacademy;
 
 import com.nhnacademy.exception.InvalidCurrencyException;
 import java.math.BigDecimal;
+import java.math.RoundingMode;
 
 public class Bank {
 
@@ -26,16 +27,15 @@ public class Bank {
         if (currency.equals(Currency.WON)) {  // 다른 통화 -> 원으로 환전
             exchangedAmount = money.getCurrency()
                                    .toWon(money.getAmount());
-            exchangedAmount.subtract(getExchangedFee(exchangedAmount));
+            exchangedAmount = exchangedAmount.subtract(getExchangedFee(exchangedAmount));
 
             return Money.WON(exchangedAmount);
         }
 
         // 3. money.getCurrency == WON
-        if (money.getCurrency()
-                 .equals(Currency.WON)) {  // 원 -> 다른 통화
+        if (money.getCurrency().equals(Currency.WON)) {  // 원 -> 다른 통화
             exchangedAmount = currency.fromWon(money.getAmount());
-            exchangedAmount.subtract(getExchangedFee(exchangedAmount));
+            exchangedAmount = exchangedAmount.subtract(getExchangedFee(exchangedAmount));
 
             return new Money(currency, exchangedAmount);
         }
@@ -50,6 +50,6 @@ public class Bank {
     }
 
     public BigDecimal getExchangedFee(BigDecimal amount) {
-        return amount.multiply(EXCHANGE_FEE);
+        return amount.multiply(EXCHANGE_FEE).setScale(2, RoundingMode.HALF_DOWN);
     }
 }

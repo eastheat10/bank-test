@@ -3,6 +3,7 @@ package com.nhnacademy;
 import static org.assertj.core.api.Assertions.assertThat;
 
 import java.math.BigDecimal;
+import java.math.RoundingMode;
 import org.junit.jupiter.api.BeforeEach;
 import org.junit.jupiter.api.DisplayName;
 import org.junit.jupiter.api.Test;
@@ -19,12 +20,9 @@ class BankTest {
     @DisplayName("수수료 확인")
     @Test
     void checkExchangeFee() {
-        Money money1 = Money.WON(BigDecimal.valueOf(10000));
+        Money money1 = Money.WON(BigDecimal.valueOf(10000).setScale(0, RoundingMode.HALF_DOWN));
 
-        assertThat(bank.getExchangedFee(money1.getAmount())).isEqualTo(money1.getAmount()
-                                                                             .multiply(
-                                                                                 BigDecimal.valueOf(
-                                                                                     0.05)));
+        assertThat(bank.getExchangedFee(money1.getAmount())).isEqualTo(money1.getAmount().multiply(BigDecimal.valueOf(0.05)));
     }
 
     @DisplayName("[수수료 계산 포함] 환전 WON -> DOLLAR")
@@ -37,8 +35,7 @@ class BankTest {
                                          .subtract(bank.getExchangedFee(Money.DOLLAR(BigDecimal.valueOf(10))
                                                                              .getAmount()));
 
-        assertThat(bank.exchange(moneyWon, Currency.DOLLAR)
-                       .getAmount()).isEqualTo(exchangeResult);
+        assertThat(bank.exchange(moneyWon, Currency.DOLLAR).getAmount()).isEqualTo(exchangeResult);
     }
 
     @DisplayName("[수수료 계산 포함] 환전 DOLLAR -> WON")
@@ -49,8 +46,7 @@ class BankTest {
                                       .getAmount();
         BigDecimal expectAmount = (Money.WON(BigDecimal.valueOf(10000))
                                         .getAmount()
-                                        .subtract(bank.getExchangedFee(
-                                            BigDecimal.valueOf(10000))));
+                                        .subtract(bank.getExchangedFee(BigDecimal.valueOf(10000)))).setScale(0);
         assertThat(resultAmount).isEqualTo(expectAmount);
     }
 
